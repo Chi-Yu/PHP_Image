@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="PHP_Image : Encapsulates common GD library operations in PHP classes." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>PHP_Image</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/Random-Host/PHP_Image">View on GitHub</a>
+
+          <h1 id="project_title">PHP_Image</h1>
+          <h2 id="project_tagline">Encapsulates common GD library operations in PHP classes.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/Random-Host/PHP_Image/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/Random-Host/PHP_Image/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p><a href="https://travis-ci.org/Random-Host/PHP_Image"><img src="https://travis-ci.org/Random-Host/PHP_Image.svg" alt="Build Status"></a></p>
+
+<h1>
+<a name="php_image" class="anchor" href="#php_image"><span class="octicon octicon-link"></span></a>PHP_Image</h1>
+
+<p>This package encapsulates some common GD library operations in PHP classes. It
+was created as part of the PHP_Webcam_Overlay package but is released as a
+separate component so it can be used in other packages.</p>
+
+<p>Because it was created as a dependency of the PHP_Webcam_Overlay package, it
+does only support a small subset of the available image handling functions.</p>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>A basic approach at using this package could look like this:</p>
+
+<div class="highlight highlight-php"><pre><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="k">namespace</span> <span class="nx">randomhost\Image</span><span class="p">;</span>
+
+<span class="k">require</span> <span class="s1">'psr0.autoloader.php'</span><span class="p">;</span>
+
+<span class="c1">// load base image</span>
+<span class="nv">$image</span> <span class="o">=</span> <span class="nx">Image</span><span class="o">::</span><span class="na">getInstanceByPath</span><span class="p">(</span><span class="s1">'image.png'</span><span class="p">);</span>
+
+<span class="c1">// load overlay image</span>
+<span class="nv">$overlay</span> <span class="o">=</span> <span class="nx">Image</span><span class="o">::</span><span class="na">getInstanceByPath</span><span class="p">(</span><span class="s1">'overlay.png'</span><span class="p">);</span>
+
+<span class="c1">// insert overlay image on top of base image at x 15, y 20</span>
+<span class="nv">$image</span><span class="o">-&gt;</span><span class="na">merge</span><span class="p">(</span><span class="nv">$overlay</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+
+<span class="c1">// setup a red text overlay</span>
+<span class="nv">$text</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Text\Generic</span><span class="p">(</span><span class="nv">$image</span><span class="p">);</span>
+<span class="nv">$text</span>
+    <span class="o">-&gt;</span><span class="na">setTextFont</span><span class="p">(</span><span class="s1">'vera.ttf'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">setTextSize</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">setTextColor</span><span class="p">(</span>
+        <span class="k">new</span> <span class="nx">Color</span><span class="p">(</span>
+            <span class="mh">0xFF</span><span class="p">,</span>
+            <span class="mh">0x00</span><span class="p">,</span>
+            <span class="mh">0x00</span>
+        <span class="p">)</span>
+    <span class="p">);</span>
+
+<span class="c1">// setup a white border for the previously defined text overlay</span>
+<span class="nv">$text</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Text\Decorator\Border</span><span class="p">(</span><span class="nv">$text</span><span class="p">);</span>
+<span class="nv">$text</span><span class="o">-&gt;</span><span class="na">setBorderColor</span><span class="p">(</span>
+    <span class="k">new</span> <span class="nx">Color</span><span class="p">(</span>
+        <span class="mh">0xFF</span><span class="p">,</span>
+        <span class="mh">0xFF</span><span class="p">,</span>
+        <span class="mh">0xFF</span>
+    <span class="p">)</span>
+<span class="p">);</span>
+
+<span class="c1">// render text overlay onto the image at x 20, y 10</span>
+<span class="nv">$text</span><span class="o">-&gt;</span><span class="na">insertText</span><span class="p">(</span>
+    <span class="mi">20</span><span class="p">,</span>
+    <span class="mi">10</span><span class="p">,</span>
+    <span class="s1">'Example text'</span>
+<span class="p">);</span>
+
+<span class="c1">// render the image</span>
+<span class="nv">$image</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">()</span>
+</pre></div>
+
+<p>This will instantiate two image objects using image files from the file system,
+merge the images and render an overlay text on top.</p>
+
+<p>Assuming that you named this file <code>image.php</code>, you should now be able to
+access the image at <code>http://example.com/image.php</code></p>
+
+<h3>
+<a name="the-image-object" class="anchor" href="#the-image-object"><span class="octicon octicon-link"></span></a>The Image object</h3>
+
+<p>The <code>Image</code> object represents an image in a (remote) filesystem or created in
+memory. It provides methods for retrieving information about the image and for
+merging other <code>Image</code> instances.</p>
+
+<h4>
+<a name="instantiation" class="anchor" href="#instantiation"><span class="octicon octicon-link"></span></a>Instantiation</h4>
+
+<p>There are two methods for creating an <code>Image</code> object instance:</p>
+
+<ol>
+<li>
+<code>Image::getInstanceByPath($path, $cacheDir = '')</code><br>
+Creates an instance from an existing local or remote image file.
+
+<ul>
+<li>
+<code>$path</code><br>
+Path or URL to the image file.</li>
+<li>
+<code>$cacheDir</code><br>
+Optional: Directory path for caching image files.<br>
+This comes in handy when retrieving images from remote locations as caching
+them locally reduces the amount of HTTP requests which have to be made.</li>
+</ul>
+</li>
+<li>
+<code>Image::getInstanceByCreate($width, $height)</code><br>
+ Creates an empty instance with the given image dimensions which can be used
+ to merge (multiple) other <code>Image</code> instances into it.
+
+<ul>
+<li>
+<code>$width</code><br>
+Width of the generated image.</li>
+<li>
+<code>$height</code><br>
+Height of the generated image.</li>
+</ul>
+</li>
+</ol><h4>
+<a name="retrieving-image-data" class="anchor" href="#retrieving-image-data"><span class="octicon octicon-link"></span></a>Retrieving image data</h4>
+
+<p>The following public methods for retrieving image related data are available:</p>
+
+<ul>
+<li>
+<code>getMimetype()</code><br>
+Returns the Mimetype of the image.</li>
+<li>
+<code>getModified()</code><br>
+Returns the last modified timestamp of the image. When working with an instance
+created with <code>getInstanceByCreate()</code>, this will be the time when the object was
+initially created.</li>
+<li>
+<code>getWidth()</code><br>
+Returns the width of the image in pixels.</li>
+<li>
+<code>getHeight()</code><br>
+Returns the height of the image in pixels.</li>
+</ul><h4>
+<a name="combining-images" class="anchor" href="#combining-images"><span class="octicon octicon-link"></span></a>Combining images</h4>
+
+<ul>
+<li>
+<code>merge(Image $srcImage, $dstX, $dstY, $strategy = self::MERGE_SCALE_SRC)</code><br>
+Merges the image resource of the given <code>Image</code> instance into the image resource
+of the active <code>Image</code> instance using the given coordinates and scaling strategy.</li>
+<li>
+<code>mergeAlpha(Image $srcImage, $dstX, $dstY, $alpha = 127)</code><br>
+Merges the image resource of the given <code>Image</code> instance into the image resource
+of the active <code>Image</code> instance using the given coordinates and alpha transparency.
+This method does not support scaling.</li>
+</ul><h4>
+<a name="scaling-strategies" class="anchor" href="#scaling-strategies"><span class="octicon octicon-link"></span></a>Scaling strategies</h4>
+
+<ul>
+<li>
+<code>Image::MERGE_SCALE_SRC</code><br>
+This strategy uses width and height of the <code>Image</code> instance given to <code>merge()</code>.
+If the image to be merged exceeds the dimensions of the target instance, it is
+cropped to fit the dimensions of the target instance.</li>
+<li>
+<code>Image::MERGE_SCALE_DST</code><br>
+This strategy re-sizes the <code>Image</code> instance given to <code>merge()</code> to match the
+dimensions of the target instance. The x and y offset given to <code>merge()</code> will
+however not be respected so the image to be merged may still be cropped.</li>
+<li>
+<code>Image::MERGE_SCALE_DST_NO_UPSCALE</code><br>
+This strategy works similar to <code>Image::MERGE_SCALE_DST</code>, but does not upscale
+the image to be merged if it is smaller than the target instance.</li>
+</ul><h4>
+<a name="rendering-the-image" class="anchor" href="#rendering-the-image"><span class="octicon octicon-link"></span></a>Rendering the image</h4>
+
+<ul>
+<li>
+<code>render()</code><br>
+Outputs the image stream to the browser. For now, images will always be rendered
+as <code>image/png</code> to allow for full alpha-transparency support. Support for other
+formats may be added in a later version.</li>
+</ul><h3>
+<a name="the-color-object" class="anchor" href="#the-color-object"><span class="octicon octicon-link"></span></a>The Color object</h3>
+
+<p>The <code>Color</code> object is merely a data container for defining color values to be
+used within the <code>PHP_Image</code> package. It comes with a set of setters and getters
+for setting and retrieving color and alpha channel data.</p>
+
+<h4>
+<a name="constructor" class="anchor" href="#constructor"><span class="octicon octicon-link"></span></a>Constructor</h4>
+
+<p>The constructor takes 4 parameters which are all optional:</p>
+
+<ul>
+<li>
+<code>$red</code><br>
+Red component (0-255 or 0x00-0xFF).</li>
+<li>
+<code>$green</code><br>
+Green component (0-255 or 0x00-0xFF).</li>
+<li>
+<code>$blue</code><br>
+Blue component (0-255 or 0x00-0xFF).</li>
+<li>
+<code>$alpha</code><br>
+Alpha value (0-127)</li>
+</ul><h4>
+<a name="configuring-the-color" class="anchor" href="#configuring-the-color"><span class="octicon octicon-link"></span></a>Configuring the color</h4>
+
+<ul>
+<li>
+<code>setRed($red)</code><br>
+Sets the red component (0-255 or 0x00-0xFF).</li>
+<li>
+<code>setGreen($green)</code><br>
+Sets the green component (0-255 or 0x00-0xFF).</li>
+<li>
+<code>setBlue($blue)</code><br>
+Sets the blue component (0-255 or 0x00-0xFF).</li>
+<li>
+<code>setAlpha($alpha)</code><br>
+Sets the alpha value (0-127). 0 indicates completely opaque while 127 indicates
+completely transparent.</li>
+</ul><h4>
+<a name="retrieving-color-data" class="anchor" href="#retrieving-color-data"><span class="octicon octicon-link"></span></a>Retrieving color data</h4>
+
+<ul>
+<li>
+<code>getRed()</code><br>
+Returns the red component (0-255 or 0x00-0xFF).</li>
+<li>
+<code>getGreen()</code><br>
+Returns the green component (0-255 or 0x00-0xFF).</li>
+<li>
+<code>getBlue()</code><br>
+Returns the blue component (0-255 or 0x00-0xFF).</li>
+<li>
+<code>getAlpha()</code><br>
+Returns the alpha value (0-127). 0 indicates completely opaque while 127
+indicates completely transparent.</li>
+</ul><h4>
+<a name="validating-color-data" class="anchor" href="#validating-color-data"><span class="octicon octicon-link"></span></a>Validating color data</h4>
+
+<ul>
+<li>
+<code>Color::validateColor($color)</code><br>
+Validates the color value and throws an InvalidArgumentException if the value is
+invalid.</li>
+<li>
+<code>Color::validateAlpha($alpha)</code><br>
+Validates the alpha value and throws an InvalidArgumentException if the value is
+invalid.</li>
+</ul><h3>
+<a name="the-imagetextgeneric-object" class="anchor" href="#the-imagetextgeneric-object"><span class="octicon octicon-link"></span></a>The Image/Text/Generic object</h3>
+
+<p>The <code>Image/Text/Generic</code> object is a generic text rendering object which can be
+extended with additional functionality using decorators.</p>
+
+<h4>
+<a name="constructor-1" class="anchor" href="#constructor-1"><span class="octicon octicon-link"></span></a>Constructor</h4>
+
+<p>The constructor takes 1 optional parameter:</p>
+
+<ul>
+<li>
+<code>$image</code><br>
+An <code>Image</code> instance to operate on. This can also be set later using the
+<code>setImage()</code> method.</li>
+</ul><h4>
+<a name="configuring-the-text" class="anchor" href="#configuring-the-text"><span class="octicon octicon-link"></span></a>Configuring the text</h4>
+
+<ul>
+<li>
+<code>setImage(Image\Image $image)</code><br>
+Sets the <code>Image</code> object instance.</li>
+<li>
+<code>setTextColor(Image\Color $color)</code><br>
+Sets the <code>Color</code> used for rendering the text.</li>
+<li>
+<code>setTextFont($path)</code><br>
+Sets the path to the font file used for rendering.</li>
+<li>
+<code>setTextSize($size)</code><br>
+Sets the text size used for rendering.</li>
+</ul><h4>
+<a name="retrieving-text-data" class="anchor" href="#retrieving-text-data"><span class="octicon octicon-link"></span></a>Retrieving text data</h4>
+
+<ul>
+<li>
+<code>getImage()</code><br>
+Returns the <code>Image</code> object instance.</li>
+<li>
+<code>getTextColor()</code><br>
+Returns the <code>Color</code> used for rendering the text.</li>
+<li>
+<code>getTextFont()</code><br>
+Returns the path to the font file used for rendering.</li>
+<li>
+<code>getTextSize()</code><br>
+Returns the text size used for rendering.</li>
+</ul><h4>
+<a name="rendering-the-text" class="anchor" href="#rendering-the-text"><span class="octicon octicon-link"></span></a>Rendering the text</h4>
+
+<ul>
+<li>
+<code>insertText($xPosition, $yPosition, $text)</code><br>
+Renders the given text onto the image resource, using the given coordinates.</li>
+</ul><h3>
+<a name="the-imagetextdecorator-object-family" class="anchor" href="#the-imagetextdecorator-object-family"><span class="octicon octicon-link"></span></a>The Image/Text/Decorator object family</h3>
+
+<p>The <code>Image/Text/Decorator</code> object family contains decorators for text rendering
+objects which add additional functionality to the <code>Image/Text/Generic</code> object or
+other objects implementing the <code>Image\Text\Text</code> interface.</p>
+
+<p>Since they wrap around any <code>Image\Text\Text</code> implementation which could also be
+another <code>Image/Text/Decorator</code> instance, they share all methods of the decorated
+object and might also define their own.</p>
+
+<h4>
+<a name="constructor-2" class="anchor" href="#constructor-2"><span class="octicon octicon-link"></span></a>Constructor</h4>
+
+<p>The constructor depends on the specific <code>Image/Text/Decorator</code> implementation
+but usually takes at least one parameter which is the object to decorate:</p>
+
+<ul>
+<li>
+<code>$text</code><br>
+An <code>Image\Text\Text</code> implementation to decorate.</li>
+</ul><h4>
+<a name="retrieving-text-decorator-data" class="anchor" href="#retrieving-text-decorator-data"><span class="octicon octicon-link"></span></a>Retrieving text decorator data</h4>
+
+<ul>
+<li>
+<code>providesMethod($name)</code><br>
+Returns if the given method is implemented by one of the decorators in the
+object tree as decorators can be stacked.</li>
+</ul><h4>
+<a name="rendering-text-using-a-decorator" class="anchor" href="#rendering-text-using-a-decorator"><span class="octicon octicon-link"></span></a>Rendering text using a decorator</h4>
+
+<p>Since all decorators implement the same interface as the standard
+<code>Image/Text/Generic</code> object, rendering using decorated text objects works the
+same way as rendering using non-decorated objects:</p>
+
+<ul>
+<li>
+<code>insertText($xPosition, $yPosition, $text)</code><br>
+Renders the given text onto the image resource, using the given coordinates.</li>
+</ul><h3>
+<a name="the-imagetextdecoratorborder-object" class="anchor" href="#the-imagetextdecoratorborder-object"><span class="octicon octicon-link"></span></a>The Image/Text/Decorator/Border object</h3>
+
+<p>The <code>Image/Text/Decorator/Border</code> object is a decorator for text rendering
+objects which adds a simple border to the rendered text.</p>
+
+<h4>
+<a name="configuring-the-border" class="anchor" href="#configuring-the-border"><span class="octicon octicon-link"></span></a>Configuring the border</h4>
+
+<ul>
+<li>
+<code>setBorderColor(Image\Color $color)</code><br>
+Sets the <code>Color</code> used for rendering the border.</li>
+</ul><h4>
+<a name="retrieving-border-data" class="anchor" href="#retrieving-border-data"><span class="octicon octicon-link"></span></a>Retrieving border data</h4>
+
+<ul>
+<li>
+<code>getBorderColor()</code><br>
+Returns the <code>Color</code> used for rendering the border.</li>
+</ul><h2>
+<a name="system-wide-installation" class="anchor" href="#system-wide-installation"><span class="octicon octicon-link"></span></a>System-Wide Installation</h2>
+
+<p>PHP_Image should be installed using the <a href="http://pear.php.net">PEAR Installer</a>.
+This installer is the PHP community's de-facto standard for installing PHP
+components.</p>
+
+<pre><code>sudo pear channel-discover pear.random-host.com
+sudo pear install --alldeps randomhost/PHP_Image
+</code></pre>
+
+<h2>
+<a name="as-a-dependency-on-your-component" class="anchor" href="#as-a-dependency-on-your-component"><span class="octicon octicon-link"></span></a>As A Dependency On Your Component</h2>
+
+<p>If you are creating a component that relies on PHP_Image, please make sure that
+you add PHP_Image to your component's package.xml file:</p>
+
+<div class="highlight highlight-xml"><pre><span class="nt">&lt;dependencies&gt;</span>
+  <span class="nt">&lt;required&gt;</span>
+    <span class="nt">&lt;package&gt;</span>
+      <span class="nt">&lt;name&gt;</span>PHP_Image<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;channel&gt;</span>pear.random-host.com<span class="nt">&lt;/channel&gt;</span>
+      <span class="nt">&lt;min&gt;</span>1.0.0<span class="nt">&lt;/min&gt;</span>
+      <span class="nt">&lt;max&gt;</span>1.999.9999<span class="nt">&lt;/max&gt;</span>
+    <span class="nt">&lt;/package&gt;</span>
+  <span class="nt">&lt;/required&gt;</span>
+<span class="nt">&lt;/dependencies&gt;</span>
+</pre></div>
+
+<h2>
+<a name="usage-1" class="anchor" href="#usage-1"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>The best documentation for PHP_Image are the unit tests, which are shipped in
+the package. You will find them installed into your PEAR repository, which on
+Linux systems is normally /usr/share/php/test.</p>
+
+<h2>
+<a name="development-environment" class="anchor" href="#development-environment"><span class="octicon octicon-link"></span></a>Development Environment</h2>
+
+<p>If you want to patch or enhance this component, you will need to create a
+suitable development environment. The easiest way to do that is to install
+phix4componentdev:</p>
+
+<pre><code># phix4componentdev
+sudo apt-get install php5-xdebug
+sudo apt-get install php5-imagick
+sudo pear channel-discover pear.phix-project.org
+sudo pear -D auto_discover=1 install -Ba phix/phix4componentdev
+</code></pre>
+
+<p>You can then clone the git repository:</p>
+
+<pre><code># PHP_Webcam_Overlay
+git clone https://github.com/Random-Host/PHP_Image.git
+</code></pre>
+
+<p>Then, install a local copy of this component's dependencies to complete the
+development environment:</p>
+
+<pre><code># build vendor/ folder
+phing build-vendor
+</code></pre>
+
+<p>To make life easier for you, common tasks (such as running unit tests,
+generating code review analytics, and creating the PEAR package) have been
+automated using <a href="http://phing.info">phing</a>.  You'll find the automated steps
+inside the build.xml file that ships with the component.</p>
+
+<p>Run the command 'phing' in the component's top-level folder to see the full list
+of available automated tasks.</p>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>See LICENSE.txt for full license details.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">PHP_Image maintained by <a href="https://github.com/Random-Host">Random-Host</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
