@@ -7,7 +7,6 @@
     <meta name="description" content="randomhost/image : Encapsulates common GD library operations in PHP classes.">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/custom.css">
 
     <title>randomhost/image</title>
   </head>
@@ -18,8 +17,6 @@
     <div id="header_wrap" class="outer">
         <header class="inner">
           <a id="forkme_banner" href="https://github.com/randomhost/image">View on GitHub</a>
-
-          <img id="project_logo" src="images/phpimage.png">
 
           <h1 id="project_title">randomhost/image</h1>
           <h2 id="project_tagline">Encapsulates common GD library operations in PHP classes.</h2>
@@ -37,7 +34,7 @@
         <p><a href="https://travis-ci.org/randomhost/image"><img src="https://travis-ci.org/randomhost/image.svg?branch=master" alt="Build Status"></a></p>
 
 <h1>
-<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introduction</h1>
+<a id="randomhostimage" class="anchor" href="#randomhostimage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>randomhost/image</h1>
 
 <p>This package encapsulates some common GD library operations in PHP classes. It
 was created as part of the <code>randomhost/webcamoverlay</code> package but is released as
@@ -118,31 +115,31 @@ merging other <code>Image</code> instances.</p>
 
 <ol>
 <li>
-<code>Image::getInstanceByPath($path, $cacheDir = '')</code>
+<code>Image::getInstanceByPath($path, $cacheDir = '')</code><br>
 Creates an instance from an existing local or remote image file.
 
 <ul>
 <li>
-<code>$path</code>
+<code>$path</code><br>
 Path or URL to the image file.</li>
 <li>
-<code>$cacheDir</code>
+<code>$cacheDir</code><br>
 Optional: Directory path for caching image files.
 This comes in handy when retrieving images from remote locations as caching
 them locally reduces the amount of HTTP requests which have to be made.</li>
 </ul>
 </li>
 <li>
-<code>Image::getInstanceByCreate($width, $height)</code>
+<code>Image::getInstanceByCreate($width, $height)</code><br>
  Creates an empty instance with the given image dimensions which can be used
  to merge (multiple) other <code>Image</code> instances into it.
 
 <ul>
 <li>
-<code>$width</code>
+<code>$width</code><br>
 Width of the generated image.</li>
 <li>
-<code>$height</code>
+<code>$height</code><br>
 Height of the generated image.</li>
 </ul>
 </li>
@@ -154,15 +151,15 @@ Height of the generated image.</li>
 <p>The following public methods for retrieving image related data are available:</p>
 
 <ul>
-<li><p><code>getMimetype()</code>
+<li><p><code>getMimetype()</code><br>
 Returns the Mimetype of the image.</p></li>
-<li><p><code>getModified()</code>
+<li><p><code>getModified()</code><br>
 Returns the last modified timestamp of the image. When working with an instance
 created with <code>getInstanceByCreate()</code>, this will be the time when the object was
 initially created.</p></li>
-<li><p><code>getWidth()</code>
+<li><p><code>getWidth()</code><br>
 Returns the width of the image in pixels.</p></li>
-<li><p><code>getHeight()</code>
+<li><p><code>getHeight()</code><br>
 Returns the height of the image in pixels.</p></li>
 </ul>
 
@@ -170,10 +167,10 @@ Returns the height of the image in pixels.</p></li>
 <a id="combining-images" class="anchor" href="#combining-images" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Combining images</h4>
 
 <ul>
-<li><p><code>merge(Image $srcImage, $dstX, $dstY, $strategy = self::MERGE_SCALE_SRC)</code>
+<li><p><code>merge(Image $srcImage, $dstX, $dstY, $strategy = self::MERGE_SCALE_SRC)</code><br>
 Merges the image resource of the given <code>Image</code> instance into the image resource
 of the active <code>Image</code> instance using the given coordinates and scaling strategy.</p></li>
-<li><p><code>mergeAlpha(Image $srcImage, $dstX, $dstY, $alpha = 127)</code>
+<li><p><code>mergeAlpha(Image $srcImage, $dstX, $dstY, $alpha = 127)</code><br>
 Merges the image resource of the given <code>Image</code> instance into the image resource
 of the active <code>Image</code> instance using the given coordinates and alpha transparency.
 This method does not support scaling.</p></li>
@@ -183,15 +180,15 @@ This method does not support scaling.</p></li>
 <a id="scaling-strategies" class="anchor" href="#scaling-strategies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Scaling strategies</h4>
 
 <ul>
-<li><p><code>Image::MERGE_SCALE_SRC</code>
+<li><p><code>Image::MERGE_SCALE_SRC</code><br>
 This strategy uses width and height of the <code>Image</code> instance given to <code>merge()</code>.
 If the image to be merged exceeds the dimensions of the target instance, it is
 cropped to fit the dimensions of the target instance.</p></li>
-<li><p><code>Image::MERGE_SCALE_DST</code>
+<li><p><code>Image::MERGE_SCALE_DST</code><br>
 This strategy re-sizes the <code>Image</code> instance given to <code>merge()</code> to match the
 dimensions of the target instance. The x and y offset given to <code>merge()</code> will
 however not be respected so the image to be merged may still be cropped.</p></li>
-<li><p><code>Image::MERGE_SCALE_DST_NO_UPSCALE</code>
+<li><p><code>Image::MERGE_SCALE_DST_NO_UPSCALE</code><br>
 This strategy works similar to <code>Image::MERGE_SCALE_DST</code>, but does not upscale
 the image to be merged if it is smaller than the target instance.</p></li>
 </ul>
@@ -201,7 +198,7 @@ the image to be merged if it is smaller than the target instance.</p></li>
 
 <ul>
 <li>
-<code>render()</code>
+<code>render()</code><br>
 Outputs the image stream to the browser. For now, images will always be rendered
 as <code>image/png</code> to allow for full alpha-transparency support. Support for other
 formats may be added in a later version.</li>
@@ -220,13 +217,13 @@ for setting and retrieving color and alpha channel data.</p>
 <p>The constructor takes 4 parameters which are all optional:</p>
 
 <ul>
-<li><p><code>$red</code>
+<li><p><code>$red</code><br>
 Red component (0-255 or 0x00-0xFF).</p></li>
-<li><p><code>$green</code>
+<li><p><code>$green</code><br>
 Green component (0-255 or 0x00-0xFF).</p></li>
-<li><p><code>$blue</code>
+<li><p><code>$blue</code><br>
 Blue component (0-255 or 0x00-0xFF).</p></li>
-<li><p><code>$alpha</code>
+<li><p><code>$alpha</code><br>
 Alpha value (0-127)</p></li>
 </ul>
 
@@ -234,13 +231,13 @@ Alpha value (0-127)</p></li>
 <a id="configuring-the-color" class="anchor" href="#configuring-the-color" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuring the color</h4>
 
 <ul>
-<li><p><code>setRed($red)</code>
+<li><p><code>setRed($red)</code><br>
 Sets the red component (0-255 or 0x00-0xFF).</p></li>
-<li><p><code>setGreen($green)</code>
+<li><p><code>setGreen($green)</code><br>
 Sets the green component (0-255 or 0x00-0xFF).</p></li>
-<li><p><code>setBlue($blue)</code>
+<li><p><code>setBlue($blue)</code><br>
 Sets the blue component (0-255 or 0x00-0xFF).</p></li>
-<li><p><code>setAlpha($alpha)</code>
+<li><p><code>setAlpha($alpha)</code><br>
 Sets the alpha value (0-127). 0 indicates completely opaque while 127 indicates
 completely transparent.</p></li>
 </ul>
@@ -249,13 +246,13 @@ completely transparent.</p></li>
 <a id="retrieving-color-data" class="anchor" href="#retrieving-color-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Retrieving color data</h4>
 
 <ul>
-<li><p><code>getRed()</code>
+<li><p><code>getRed()</code><br>
 Returns the red component (0-255 or 0x00-0xFF).</p></li>
-<li><p><code>getGreen()</code>
+<li><p><code>getGreen()</code><br>
 Returns the green component (0-255 or 0x00-0xFF).</p></li>
-<li><p><code>getBlue()</code>
+<li><p><code>getBlue()</code><br>
 Returns the blue component (0-255 or 0x00-0xFF).</p></li>
-<li><p><code>getAlpha()</code>
+<li><p><code>getAlpha()</code><br>
 Returns the alpha value (0-127). 0 indicates completely opaque while 127
 indicates completely transparent.</p></li>
 </ul>
@@ -264,10 +261,10 @@ indicates completely transparent.</p></li>
 <a id="validating-color-data" class="anchor" href="#validating-color-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Validating color data</h4>
 
 <ul>
-<li><p><code>Color::validateColor($color)</code>
+<li><p><code>Color::validateColor($color)</code><br>
 Validates the color value and throws an InvalidArgumentException if the value is
 invalid.</p></li>
-<li><p><code>Color::validateAlpha($alpha)</code>
+<li><p><code>Color::validateAlpha($alpha)</code><br>
 Validates the alpha value and throws an InvalidArgumentException if the value is
 invalid.</p></li>
 </ul>
@@ -285,7 +282,7 @@ extended with additional functionality using decorators.</p>
 
 <ul>
 <li>
-<code>$image</code>
+<code>$image</code><br>
 An <code>Image</code> instance to operate on. This can also be set later using the
 <code>setImage()</code> method.</li>
 </ul>
@@ -294,13 +291,13 @@ An <code>Image</code> instance to operate on. This can also be set later using t
 <a id="configuring-the-text" class="anchor" href="#configuring-the-text" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuring the text</h4>
 
 <ul>
-<li><p><code>setImage(Image\Image $image)</code>
+<li><p><code>setImage(Image\Image $image)</code><br>
 Sets the <code>Image</code> object instance.</p></li>
-<li><p><code>setTextColor(Image\Color $color)</code>
+<li><p><code>setTextColor(Image\Color $color)</code><br>
 Sets the <code>Color</code> used for rendering the text.</p></li>
-<li><p><code>setTextFont($path)</code>
+<li><p><code>setTextFont($path)</code><br>
 Sets the path to the font file used for rendering.</p></li>
-<li><p><code>setTextSize($size)</code>
+<li><p><code>setTextSize($size)</code><br>
 Sets the text size used for rendering.</p></li>
 </ul>
 
@@ -308,13 +305,13 @@ Sets the text size used for rendering.</p></li>
 <a id="retrieving-text-data" class="anchor" href="#retrieving-text-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Retrieving text data</h4>
 
 <ul>
-<li><p><code>getImage()</code>
+<li><p><code>getImage()</code><br>
 Returns the <code>Image</code> object instance.</p></li>
-<li><p><code>getTextColor()</code>
+<li><p><code>getTextColor()</code><br>
 Returns the <code>Color</code> used for rendering the text.</p></li>
-<li><p><code>getTextFont()</code>
+<li><p><code>getTextFont()</code><br>
 Returns the path to the font file used for rendering.</p></li>
-<li><p><code>getTextSize()</code>
+<li><p><code>getTextSize()</code><br>
 Returns the text size used for rendering.</p></li>
 </ul>
 
@@ -323,7 +320,7 @@ Returns the text size used for rendering.</p></li>
 
 <ul>
 <li>
-<code>insertText($xPosition, $yPosition, $text)</code>
+<code>insertText($xPosition, $yPosition, $text)</code><br>
 Renders the given text onto the image resource, using the given coordinates.</li>
 </ul>
 
@@ -346,7 +343,7 @@ but usually takes at least one parameter which is the object to decorate:</p>
 
 <ul>
 <li>
-<code>$text</code>
+<code>$text</code><br>
 An <code>Image\Text\Text</code> implementation to decorate.</li>
 </ul>
 
@@ -355,7 +352,7 @@ An <code>Image\Text\Text</code> implementation to decorate.</li>
 
 <ul>
 <li>
-<code>providesMethod($name)</code>
+<code>providesMethod($name)</code><br>
 Returns if the given method is implemented by one of the decorators in the
 object tree as decorators can be stacked.</li>
 </ul>
@@ -369,7 +366,7 @@ same way as rendering using non-decorated objects:</p>
 
 <ul>
 <li>
-<code>insertText($xPosition, $yPosition, $text)</code>
+<code>insertText($xPosition, $yPosition, $text)</code><br>
 Renders the given text onto the image resource, using the given coordinates.</li>
 </ul>
 
@@ -384,7 +381,7 @@ objects which adds a simple border to the rendered text.</p>
 
 <ul>
 <li>
-<code>setBorderColor(Image\Color $color)</code>
+<code>setBorderColor(Image\Color $color)</code><br>
 Sets the <code>Color</code> used for rendering the border.</li>
 </ul>
 
@@ -393,7 +390,7 @@ Sets the <code>Color</code> used for rendering the border.</li>
 
 <ul>
 <li>
-<code>getBorderColor()</code>
+<code>getBorderColor()</code><br>
 Returns the <code>Color</code> used for rendering the border.</li>
 </ul>
 
@@ -412,7 +409,7 @@ Returns the <code>Color</code> used for rendering the border.</li>
       </footer>
     </div>
 
-
+    
 
   </body>
 </html>
