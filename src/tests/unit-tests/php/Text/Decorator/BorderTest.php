@@ -1,28 +1,34 @@
 <?php
+
+declare(strict_types=1);
+
 namespace randomhost\Image\Text\Decorator;
 
+use PHPUnit\Framework\TestCase;
 use randomhost\Image\Image;
 
 /**
- * Unit test for Border
+ * Unit test for Border.
  *
  * @author    Ch'Ih-Yu <chi-yu@web.de>
- * @copyright 2016 random-host.com
+ * @copyright 2020 random-host.tv
  * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
- * @link      http://github.random-host.com/image/
+ *
+ * @see       https://github.random-host.tv/image/
+ *
+ * @internal
+ * @covers \randomhost\Image\Text\Decorator\Border
  */
-class BorderTest extends \PHPUnit_Framework_TestCase
+class BorderTest extends TestCase
 {
     /**
      * Tests Border::setBorderColor() and Border::getBorderColor().
-     *
-     * @return void
      */
     public function testSetGetBorderColor()
     {
         // mock dependencies
-        $text = $this->getMock('randomhost\\Image\\Text\\Generic');
-        $color = $this->getMock('randomhost\\Image\\Color');
+        $text = $this->createMock('randomhost\\Image\\Text\\Generic');
+        $color = $this->createMock('randomhost\\Image\\Color');
 
         $border = new Border($text);
 
@@ -36,8 +42,6 @@ class BorderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Border::setInsertText().
-     *
-     * @return void
      */
     public function testInsertText()
     {
@@ -54,105 +58,82 @@ class BorderTest extends \PHPUnit_Framework_TestCase
         $image = Image::getInstanceByCreate(100, 100);
 
         // mock dependencies
-        $textMock = $this->getMock('randomhost\\Image\\Text\\Generic');
-        $textColorMock = $this->getMock('randomhost\\Image\\Color');
-        $borderColorMock = $this->getMock('randomhost\\Image\\Color');
+        $textMock = $this->createMock('randomhost\\Image\\Text\\Generic');
+        $textColorMock = $this->createMock('randomhost\\Image\\Color');
+        $borderColorMock = $this->createMock('randomhost\\Image\\Color');
 
         // configure mock objects
-        $borderColorMock->expects($this->at(0))
+        $borderColorMock->expects($this->once())
             ->method('getAlpha')
-            ->will($this->returnValue($alpha));
+            ->will($this->returnValue($alpha))
+        ;
 
-        $borderColorMock->expects($this->at(1))
+        $borderColorMock->expects($this->atLeastOnce())
             ->method('setAlpha')
-            ->with($this->identicalTo(0))
-            ->will($this->returnSelf());
+            ->withConsecutive([$this->identicalTo(0)], [$this->identicalTo(75)])
+            ->will($this->returnSelf())
+        ;
 
-        $textMock->expects($this->at(0))
+        $textMock->expects($this->once())
             ->method('getTextColor')
-            ->will($this->returnValue($textColorMock));
+            ->will($this->returnValue($textColorMock))
+        ;
 
-        $textMock->expects($this->at(1))
+        $textMock->expects($this->exactly(2))
             ->method('setTextColor')
-            ->with($this->identicalTo($borderColorMock))
-            ->will($this->returnSelf());
-
-        $textMock->expects($this->at(2))
-            ->method('insertText')
-            ->with(
-                $this->identicalTo($xPosition - 1),
-                $this->identicalTo($yPosition - 1),
-                $this->identicalTo($text)
+            ->withConsecutive(
+                [$this->identicalTo($borderColorMock)],
+                [$this->identicalTo($textColorMock)]
             )
-            ->will($this->returnSelf());
+            ->will($this->returnSelf())
+        ;
 
-        $textMock->expects($this->at(3))
+        $textMock->expects($this->atLeastOnce())
             ->method('insertText')
-            ->with(
-                $this->identicalTo($xPosition - 1),
-                $this->identicalTo($yPosition),
-                $this->identicalTo($text)
+            ->withConsecutive(
+                [
+                    $this->identicalTo($xPosition - 1),
+                    $this->identicalTo($yPosition - 1),
+                    $this->identicalTo($text),
+                ],
+                [
+                    $this->identicalTo($xPosition - 1),
+                    $this->identicalTo($yPosition),
+                    $this->identicalTo($text),
+                ],
+                [
+                    $this->identicalTo($xPosition - 1),
+                    $this->identicalTo($yPosition + 1),
+                    $this->identicalTo($text),
+                ],
+                [
+                    $this->identicalTo($xPosition),
+                    $this->identicalTo($yPosition - 1),
+                    $this->identicalTo($text),
+                ],
+                [
+                    $this->identicalTo($xPosition),
+                    $this->identicalTo($yPosition + 1),
+                    $this->identicalTo($text),
+                ],
+                [
+                    $this->identicalTo($xPosition + 1),
+                    $this->identicalTo($yPosition - 1),
+                    $this->identicalTo($text),
+                ],
+                [
+                    $this->identicalTo($xPosition + 1),
+                    $this->identicalTo($yPosition),
+                    $this->identicalTo($text),
+                ],
+                [
+                    $this->identicalTo($xPosition + 1),
+                    $this->identicalTo($yPosition + 1),
+                    $this->identicalTo($text),
+                ],
             )
-            ->will($this->returnSelf());
-
-        $textMock->expects($this->at(4))
-            ->method('insertText')
-            ->with(
-                $this->identicalTo($xPosition - 1),
-                $this->identicalTo($yPosition + 1),
-                $this->identicalTo($text)
-            )
-            ->will($this->returnSelf());
-
-        $textMock->expects($this->at(5))
-            ->method('insertText')
-            ->with(
-                $this->identicalTo($xPosition),
-                $this->identicalTo($yPosition - 1),
-                $this->identicalTo($text)
-            )
-            ->will($this->returnSelf());
-
-        $textMock->expects($this->at(6))
-            ->method('insertText')
-            ->with(
-                $this->identicalTo($xPosition),
-                $this->identicalTo($yPosition + 1),
-                $this->identicalTo($text)
-            )
-            ->will($this->returnSelf());
-
-        $textMock->expects($this->at(7))
-            ->method('insertText')
-            ->with(
-                $this->identicalTo($xPosition + 1),
-                $this->identicalTo($yPosition - 1),
-                $this->identicalTo($text)
-            )
-            ->will($this->returnSelf());
-
-        $textMock->expects($this->at(8))
-            ->method('insertText')
-            ->with(
-                $this->identicalTo($xPosition + 1),
-                $this->identicalTo($yPosition),
-                $this->identicalTo($text)
-            )
-            ->will($this->returnSelf());
-
-        $textMock->expects($this->at(9))
-            ->method('insertText')
-            ->with(
-                $this->identicalTo($xPosition + 1),
-                $this->identicalTo($yPosition + 1),
-                $this->identicalTo($text)
-            )
-            ->will($this->returnSelf());
-
-        $textMock->expects($this->at(10))
-            ->method('setTextColor')
-            ->with($this->identicalTo($textColorMock))
-            ->will($this->returnSelf());
+            ->will($this->returnSelf())
+        ;
 
         $border = new Border($textMock);
 
@@ -166,22 +147,17 @@ class BorderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Border::setInsertText() with an unset border color.
-     *
-     * @return void
      */
     public function testInsertTextMissingBorderColor()
     {
         // mock dependencies
-        $textMock = $this->getMock('randomhost\\Image\\Text\\Generic');
+        $textMock = $this->createMock('randomhost\\Image\\Text\\Generic');
 
         $border = new Border($textMock);
 
-        $this->setExpectedException(
-            '\RuntimeException',
-            'Attempt to render text border without setting a color'
-        );
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage('Attempt to render text border without setting a color');
 
         $border->insertText(0, 0, '');
     }
 }
-

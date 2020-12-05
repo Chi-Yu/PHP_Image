@@ -1,29 +1,35 @@
 <?php
+
+declare(strict_types=1);
+
 namespace randomhost\Image\Text;
 
+use PHPUnit\Framework\TestCase;
 use randomhost\Image\Image;
 
 /**
- * Unit test for Generic
+ * Unit test for Generic.
  *
  * @author    Ch'Ih-Yu <chi-yu@web.de>
- * @copyright 2016 random-host.com
+ * @copyright 2020 random-host.tv
  * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
- * @link      http://github.random-host.com/image/
+ *
+ * @see       https://github.random-host.tv/image/
+ *
+ * @internal
+ * @covers \randomhost\Image\Text\Generic
  */
-class GenericTest extends \PHPUnit_Framework_TestCase
+class GenericTest extends TestCase
 {
     /**
-     * Path to test data directory
+     * Path to test data directory.
      *
      * @var string
      */
-    const TEST_DATA_DIR = '/testdata';
+    public const TEST_DATA_DIR = '/testdata';
 
     /**
      * Tests Generic::setImage() and Generic::getImage().
-     *
-     * @return void
      */
     public function testSetGetImage()
     {
@@ -38,12 +44,10 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Generic::setTextColor() and Generic::getTextColor().
-     *
-     * @return void
      */
     public function testSetGetTextColor()
     {
-        $colorMock = $this->getMock('randomhost\\Image\\Color');
+        $colorMock = $this->createMock('randomhost\\Image\\Color');
 
         $generic = new Generic();
 
@@ -54,8 +58,6 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Generic::setTextFont() and Generic::getTextFont().
-     *
-     * @return void
      */
     public function testSetGetTextFont()
     {
@@ -71,8 +73,6 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Generic::setTextFont() with an invalid font path.
-     *
-     * @return void
      */
     public function testSetTextFontInvalidFontPath()
     {
@@ -81,9 +81,9 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
         $generic = new Generic();
 
-        $this->setExpectedException(
-            '\InvalidArgumentException',
-            'Unable to load font file at ' . $font
+        $this->expectException('\InvalidArgumentException');
+        $this->expectExceptionMessage(
+            'Unable to load font file at '.$font
         );
 
         $generic->setTextFont($font);
@@ -91,8 +91,6 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Generic::setTextSize() and Generic::getTextSize().
-     *
-     * @return void
      */
     public function testSetGetTextSize()
     {
@@ -108,15 +106,13 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Generic::insertText().
-     *
-     * @return void
      */
     public function testInsertText()
     {
         // dependencies
         $image = $this->getImageInstance();
         $font = $this->getTestDataPath('vera.ttf');
-        $colorMock = $this->getMock('randomhost\\Image\\Color');
+        $colorMock = $this->createMock('randomhost\\Image\\Color');
 
         $generic = new Generic($image);
 
@@ -129,14 +125,12 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Generic::insertText() with an unset Image object.
-     *
-     * @return void
      */
     public function testInsertTextMissingImageObject()
     {
         // dependencies
         $font = $this->getTestDataPath('vera.ttf');
-        $colorMock = $this->getMock('randomhost\\Image\\Color');
+        $colorMock = $this->createMock('randomhost\\Image\\Color');
 
         $generic = new Generic();
 
@@ -144,8 +138,8 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($generic, $generic->setTextColor($colorMock));
 
-        $this->setExpectedException(
-            '\RuntimeException',
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage(
             'Attempt to render text onto invalid image resource'
         );
 
@@ -154,8 +148,6 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Generic::insertText() with an unset Image object image resource.
-     *
-     * @return void
      */
     public function testInsertTextUnsetImageResource()
     {
@@ -163,7 +155,7 @@ class GenericTest extends \PHPUnit_Framework_TestCase
         $image = $this->getImageInstance();
         $image->image = null;
         $font = $this->getTestDataPath('vera.ttf');
-        $colorMock = $this->getMock('randomhost\\Image\\Color');
+        $colorMock = $this->createMock('randomhost\\Image\\Color');
 
         $generic = new Generic($image);
 
@@ -171,8 +163,8 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($generic, $generic->setTextColor($colorMock));
 
-        $this->setExpectedException(
-            '\RuntimeException',
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage(
             'Attempt to render text onto invalid image resource'
         );
 
@@ -181,8 +173,6 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Generic::insertText() with an unset Color object.
-     *
-     * @return void
      */
     public function testInsertTextMissingColorObject()
     {
@@ -194,8 +184,8 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($generic, $generic->setTextFont($font));
 
-        $this->setExpectedException(
-            '\RuntimeException',
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage(
             'Attempt to render text without setting a color'
         );
 
@@ -204,21 +194,19 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Generic::insertText() with an unset font path.
-     *
-     * @return void
      */
     public function testInsertTextUnsetFont()
     {
         // dependencies
         $image = $this->getImageInstance();
-        $colorMock = $this->getMock('randomhost\\Image\\Color');
+        $colorMock = $this->createMock('randomhost\\Image\\Color');
 
         $generic = new Generic($image);
 
         $this->assertSame($generic, $generic->setTextColor($colorMock));
 
-        $this->setExpectedException(
-            '\RuntimeException',
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage(
             'No font file selected for rendering text overlay'
         );
 
@@ -227,15 +215,13 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Generic::insertText() with a missing font file.
-     *
-     * @return void
      */
     public function testInsertTextMissingFontFile()
     {
         // dependencies
         $image = $this->getImageInstance();
         $font = 'vera.ttf';
-        $colorMock = $this->getMock('randomhost\\Image\\Color');
+        $colorMock = $this->createMock('randomhost\\Image\\Color');
 
         $generic = new Generic($image);
 
@@ -243,7 +229,7 @@ class GenericTest extends \PHPUnit_Framework_TestCase
 
         // move font file to a temporary path
         $tmpDir = sys_get_temp_dir();
-        $fontPath = realpath($tmpDir) . DIRECTORY_SEPARATOR . $font;
+        $fontPath = realpath($tmpDir).DIRECTORY_SEPARATOR.$font;
         copy($this->getTestDataPath($font), $fontPath);
 
         // set font and let setTextFont() validate the path
@@ -252,9 +238,9 @@ class GenericTest extends \PHPUnit_Framework_TestCase
         // remove font copy to trigger the expected exception
         unlink($fontPath);
 
-        $this->setExpectedException(
-            '\RuntimeException',
-            'Failed to read font file \'' . $fontPath . '\''
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage(
+            'Failed to read font file \''.$fontPath.'\''
         );
 
         $generic->insertText(0, 0, '');
@@ -276,12 +262,13 @@ class GenericTest extends \PHPUnit_Framework_TestCase
      *
      * @param string $fileName Test data file name.
      *
-     * @return string
      * @throws \Exception Thrown in case the test data file could not be read.
+     *
+     * @return string
      */
     protected function getTestDataPath($fileName)
     {
-        $dir = APP_TESTDIR .  self::TEST_DATA_DIR;
+        $dir = APP_TESTDIR.self::TEST_DATA_DIR;
         if (!is_dir($dir) || !is_readable($dir)) {
             throw new \Exception(
                 sprintf(
@@ -291,7 +278,7 @@ class GenericTest extends \PHPUnit_Framework_TestCase
             );
         }
 
-        $path = realpath($dir) . '/' . $fileName;
+        $path = realpath($dir).'/'.$fileName;
         if (!is_file($path) || !is_readable($path)) {
             throw new \Exception(
                 sprintf(
@@ -304,4 +291,3 @@ class GenericTest extends \PHPUnit_Framework_TestCase
         return realpath($path);
     }
 }
-

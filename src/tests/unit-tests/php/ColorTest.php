@@ -1,15 +1,25 @@
 <?php
+
+declare(strict_types=1);
+
 namespace randomhost\Image;
 
+use PHPUnit\Framework\TestCase;
+use TypeError;
+
 /**
- * Unit test for Color
+ * Unit test for Color.
  *
  * @author    Ch'Ih-Yu <chi-yu@web.de>
- * @copyright 2016 random-host.com
+ * @copyright 2020 random-host.tv
  * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
- * @link      http://github.random-host.com/image/
+ *
+ * @see       https://github.random-host.tv/image/
+ *
+ * @internal
+ * @covers \randomhost\Image\Color
  */
-class ColorTest extends \PHPUnit_Framework_TestCase
+class ColorTest extends TestCase
 {
     /**
      * Data provider for color values.
@@ -18,21 +28,21 @@ class ColorTest extends \PHPUnit_Framework_TestCase
      */
     public function providerColor()
     {
-        return array(
-            // color, exception
-            array(128, false),
-            array(0, false),
-            array(255, false),
-            array(0x80, false),
-            array(0x00, false),
-            array(0xFF, false),
-            array(-1, true),
-            array(256, true),
-            array(0x100, true),
-            array(128.0, true),
-            array('128', true),
-            array('notanumber', true),
-        );
+        return [
+            // color, exception, type error
+            [128, false, false],
+            [0, false, false],
+            [255, false, false],
+            [0x80, false, false],
+            [0x00, false, false],
+            [0xFF, false, false],
+            [-1, true, false],
+            [256, true, false],
+            [0x100, true, false],
+            [128.5, false, true],
+            ['128', false, true],
+            ['notanumber', false, true],
+        ];
     }
 
     /**
@@ -42,39 +52,42 @@ class ColorTest extends \PHPUnit_Framework_TestCase
      */
     public function providerAlpha()
     {
-        return array(
+        return [
             // alpha, exception
-            array(64, false),
-            array(0, false),
-            array(127, false),
-            array(-1, true),
-            array(128, true),
-            array(64.0, true),
-            array('64', true),
-            array('notanumber', true),
-        );
+            [64, false, false],
+            [0, false, false],
+            [127, false, false],
+            [-1, true, false],
+            [128, true, false],
+            [64.0, false, true],
+            ['64', false, true],
+            ['notanumber', false, true],
+        ];
     }
 
     /**
      * Tests Color::setRed() and Color::getRed().
      *
-     * @param int  $red       Red component (0-255 or 0x00-0xFF).
-     * @param bool $exception Exception expected
+     * @param mixed $red       Red component (0-255 or 0x00-0xFF).
+     * @param bool  $exception Exception expected.
+     * @param bool  $typeError Type error expected.
      *
      * @dataProvider providerColor
-     *
-     * @return void
      */
-    public function testSetGetRed($red, $exception)
+    public function testSetGetRed($red, bool $exception, bool $typeError)
     {
         $color = new Color();
 
         if ($exception) {
-            $this->setExpectedException(
-                '\InvalidArgumentException',
-                'Color is expected to be an integer value between 0 and 255 ' .
+            $this->expectException('\InvalidArgumentException');
+            $this->expectExceptionMessage(
+                'Color is expected to be an integer value between 0 and 255 '.
                 'or a hexadecimal value between 0x00 and 0xFF'
             );
+        }
+
+        if ($typeError) {
+            $this->expectException(TypeError::class);
         }
 
         $this->assertSame($color, $color->setRed($red));
@@ -85,23 +98,26 @@ class ColorTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Color::setGreen() and Color::getGreen().
      *
-     * @param int  $green     Green component (0-255 or 0x00-0xFF).
-     * @param bool $exception Exception expected
+     * @param mixed $green     Green component (0-255 or 0x00-0xFF).
+     * @param bool  $exception Exception expected.
+     * @param bool  $typeError Type error expected.
      *
      * @dataProvider providerColor
-     *
-     * @return void
      */
-    public function testSetGetGreen($green, $exception)
+    public function testSetGetGreen($green, bool $exception, bool $typeError)
     {
         $color = new Color();
 
         if ($exception) {
-            $this->setExpectedException(
-                '\InvalidArgumentException',
-                'Color is expected to be an integer value between 0 and 255 ' .
+            $this->expectException('\InvalidArgumentException');
+            $this->expectExceptionMessage(
+                'Color is expected to be an integer value between 0 and 255 '.
                 'or a hexadecimal value between 0x00 and 0xFF'
             );
+        }
+
+        if ($typeError) {
+            $this->expectException(TypeError::class);
         }
 
         $this->assertSame($color, $color->setGreen($green));
@@ -112,23 +128,26 @@ class ColorTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Color::setBlue() and Color::getBlue().
      *
-     * @param int  $blue      Blue component (0-255 or 0x00-0xFF).
-     * @param bool $exception Exception expected
+     * @param mixed $blue      Blue component (0-255 or 0x00-0xFF).
+     * @param bool  $exception Exception expected.
+     * @param bool  $typeError Type error expected.
      *
      * @dataProvider providerColor
-     *
-     * @return void
      */
-    public function testSetGetBlue($blue, $exception)
+    public function testSetGetBlue($blue, bool $exception, bool $typeError)
     {
         $color = new Color();
 
         if ($exception) {
-            $this->setExpectedException(
-                '\InvalidArgumentException',
-                'Color is expected to be an integer value between 0 and 255 ' .
+            $this->expectException('\InvalidArgumentException');
+            $this->expectExceptionMessage(
+                'Color is expected to be an integer value between 0 and 255 '.
                 'or a hexadecimal value between 0x00 and 0xFF'
             );
+        }
+
+        if ($typeError) {
+            $this->expectException(TypeError::class);
         }
 
         $this->assertSame($color, $color->setBlue($blue));
@@ -139,22 +158,25 @@ class ColorTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Color::setAlpha() and Color::getAlpha().
      *
-     * @param int  $alpha     Alpha value (0-127).
-     * @param bool $exception Exception expected
+     * @param mixed $alpha     Alpha value (0-127).
+     * @param bool  $exception Exception expected.
+     * @param bool  $typeError Type error expected.
      *
      * @dataProvider providerAlpha
-     *
-     * @return void
      */
-    public function testSetGetAlpha($alpha, $exception)
+    public function testSetGetAlpha($alpha, bool $exception, bool $typeError)
     {
         $color = new Color();
 
         if ($exception) {
-            $this->setExpectedException(
-                '\InvalidArgumentException',
+            $this->expectException('\InvalidArgumentException');
+            $this->expectExceptionMessage(
                 'Alpha is expected to be an integer value between 0 and 127'
             );
+        }
+
+        if ($typeError) {
+            $this->expectException(TypeError::class);
         }
 
         $this->assertSame($color, $color->setAlpha($alpha));
@@ -165,21 +187,24 @@ class ColorTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Color::validateColor().
      *
-     * @param int  $color     Color component (0-255 or 0x00-0xFF).
-     * @param bool $exception Exception expected
+     * @param mixed $color     Color component (0-255 or 0x00-0xFF).
+     * @param bool  $exception Exception expected.
+     * @param bool  $typeError Type error expected.
      *
      * @dataProvider providerColor
-     *
-     * @return void
      */
-    public function testValidateColor($color, $exception)
+    public function testValidateColor($color, bool $exception, bool $typeError)
     {
         if ($exception) {
-            $this->setExpectedException(
-                '\InvalidArgumentException',
-                'Color is expected to be an integer value between 0 and 255 ' .
+            $this->expectException('\InvalidArgumentException');
+            $this->expectExceptionMessage(
+                'Color is expected to be an integer value between 0 and 255 '.
                 'or a hexadecimal value between 0x00 and 0xFF'
             );
+        }
+
+        if ($typeError) {
+            $this->expectException(TypeError::class);
         }
 
         $this->assertTrue(Color::validateColor($color));
@@ -188,23 +213,25 @@ class ColorTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Color::validateAlpha().
      *
-     * @param int  $alpha     Alpha value (0-127).
-     * @param bool $exception Exception expected
+     * @param mixed $alpha     Alpha value (0-127).
+     * @param bool  $exception Exception expected.
+     * @param bool  $typeError Type error expected.
      *
      * @dataProvider providerAlpha
-     *
-     * @return void
      */
-    public function testValidateAlpha($alpha, $exception)
+    public function testValidateAlpha($alpha, bool $exception, bool $typeError)
     {
         if ($exception) {
-            $this->setExpectedException(
-                '\InvalidArgumentException',
+            $this->expectException('\InvalidArgumentException');
+            $this->expectExceptionMessage(
                 'Alpha is expected to be an integer value between 0 and 127'
             );
+        }
+
+        if ($typeError) {
+            $this->expectException(TypeError::class);
         }
 
         $this->assertTrue(Color::validateAlpha($alpha));
     }
 }
-

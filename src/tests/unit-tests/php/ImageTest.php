@@ -1,22 +1,31 @@
 <?php
+
+declare(strict_types=1);
+
 namespace randomhost\Image;
 
+use PHPUnit\Framework\TestCase;
+
 /**
- * Unit test for Image
+ * Unit test for Image.
  *
  * @author    Ch'Ih-Yu <chi-yu@web.de>
- * @copyright 2016 random-host.com
+ * @copyright 2020 random-host.tv
  * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
- * @link      http://github.random-host.com/image/
+ *
+ * @see       https://github.random-host.tv/image/
+ *
+ * @internal
+ * @covers \randomhost\Image\Image
  */
-class ImageTest extends \PHPUnit_Framework_TestCase
+class ImageTest extends TestCase
 {
     /**
-     * Path to test data directory
+     * Path to test data directory.
      *
      * @var string
      */
-    const TEST_DATA_DIR = '/testdata';
+    private const TEST_DATA_DIR = '/testdata';
 
     /**
      * Data provider for test image and associated mime type values.
@@ -25,12 +34,12 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function providerImageData()
     {
-        return array(
+        return [
             // test image, mime type, width, height
-            array('test.gif', 'image/gif', 128, 128),
-            array('test.jpg', 'image/jpeg', 128, 128),
-            array('test.png', 'image/png', 128, 128),
-        );
+            ['test.gif', 'image/gif', 128, 128],
+            ['test.jpg', 'image/jpeg', 128, 128],
+            ['test.png', 'image/png', 128, 128],
+        ];
     }
 
     /**
@@ -40,26 +49,26 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function providerMerge()
     {
-        return array(
+        return [
             // first image name, second image name, merge strategy
-            array('test.jpg', 'test.png', Image::MERGE_SCALE_DST),
-            array('test.jpg', 'test.png', Image::MERGE_SCALE_DST_NO_UPSCALE),
-            array('test.jpg', 'test.png', Image::MERGE_SCALE_SRC),
-            array('test.png', 'test_small.png', Image::MERGE_SCALE_DST),
-            array(
+            ['test.jpg', 'test.png', Image::MERGE_SCALE_DST],
+            ['test.jpg', 'test.png', Image::MERGE_SCALE_DST_NO_UPSCALE],
+            ['test.jpg', 'test.png', Image::MERGE_SCALE_SRC],
+            ['test.png', 'test_small.png', Image::MERGE_SCALE_DST],
+            [
                 'test.png',
                 'test_small.png',
-                Image::MERGE_SCALE_DST_NO_UPSCALE
-            ),
-            array('test.png', 'test_small.png', Image::MERGE_SCALE_SRC),
-            array('test_small.png', 'test.png', Image::MERGE_SCALE_DST),
-            array(
+                Image::MERGE_SCALE_DST_NO_UPSCALE,
+            ],
+            ['test.png', 'test_small.png', Image::MERGE_SCALE_SRC],
+            ['test_small.png', 'test.png', Image::MERGE_SCALE_DST],
+            [
                 'test_small.png',
                 'test.png',
-                Image::MERGE_SCALE_DST_NO_UPSCALE
-            ),
-            array('test_small.png', 'test.png', Image::MERGE_SCALE_SRC),
-        );
+                Image::MERGE_SCALE_DST_NO_UPSCALE,
+            ],
+            ['test_small.png', 'test.png', Image::MERGE_SCALE_SRC],
+        ];
     }
 
     /**
@@ -69,18 +78,16 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function providerMergeAlpha()
     {
-        return array(
+        return [
             // first image name, second image name, alpha value
-            array('test.jpg', 'test.png', 127),
-            array('test.jpg', 'test.png', 0),
-            array('test.jpg', 'test.png', 64),
-        );
+            ['test.jpg', 'test.png', 127],
+            ['test.jpg', 'test.png', 0],
+            ['test.jpg', 'test.png', 64],
+        ];
     }
 
     /**
      * Tests Image::getInstanceByPath() with a GIF image.
-     *
-     * @return void
      */
     public function testGetInstanceByPathGif()
     {
@@ -90,13 +97,11 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('randomhost\\Image\\Image', $image);
 
-        $this->assertInternalType('resource', $image->image);
+        $this->assertIsResource($image->image);
     }
 
     /**
      * Tests Image::getInstanceByPath() with a JPEG image.
-     *
-     * @return void
      */
     public function testGetInstanceByPathJpeg()
     {
@@ -106,13 +111,11 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('randomhost\\Image\\Image', $image);
 
-        $this->assertInternalType('resource', $image->image);
+        $this->assertIsResource($image->image);
     }
 
     /**
      * Tests Image::getInstanceByPath() with a PNG image.
-     *
-     * @return void
      */
     public function testGetInstanceByPathPng()
     {
@@ -122,20 +125,18 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('randomhost\\Image\\Image', $image);
 
-        $this->assertInternalType('resource', $image->image);
+        $this->assertIsResource($image->image);
     }
 
     /**
      * Tests Image::getInstanceByPath() with an unsupported image format.
-     *
-     * @return void
      */
     public function testGetInstanceByPathUnsupportedFormat()
     {
         $imagePath = $this->getTestDataPath('test.tif');
 
-        $this->setExpectedException(
-            '\UnexpectedValueException',
+        $this->expectException('\UnexpectedValueException');
+        $this->expectExceptionMessage(
             'Image type image/tiff not supported'
         );
 
@@ -144,15 +145,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Image::getInstanceByPath() with an empty image file.
-     *
-     * @return void
      */
     public function testGetInstanceByPathEmptyImage()
     {
         $imagePath = $this->getTestDataPath('empty.gif');
 
-        $this->setExpectedException(
-            '\RuntimeException',
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage(
             "Couldn't read image at"
         );
 
@@ -161,15 +160,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Image::getInstanceByPath() with a broken image file.
-     *
-     * @return void
      */
     public function testGetInstanceByPathBrokenImage()
     {
         $imagePath = $this->getTestDataPath('broken.gif');
 
-        $this->setExpectedException(
-            '\RuntimeException',
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage(
             "Couldn't read image at"
         );
 
@@ -178,8 +175,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Image::getInstanceByPath() with a GIF image.
-     *
-     * @return void
      */
     public function testGetInstanceByPathCache()
     {
@@ -187,8 +182,8 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         // create temporary image copy so we can do whatever we want with it
         $originalPath = $this->getTestDataPath($imageName);
-        $dummyPath = dirname($originalPath) . DIRECTORY_SEPARATOR .
-            'tmp_' . $imageName;
+        $dummyPath = dirname($originalPath).DIRECTORY_SEPARATOR.
+            'tmp_'.$imageName;
         copy($originalPath, $dummyPath);
         $this->assertTrue(
             is_file($dummyPath),
@@ -201,7 +196,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         // prepare cache directory
         $cacheDir = sys_get_temp_dir();
-        $cachePath = $cacheDir . DIRECTORY_SEPARATOR . 'tmp_' . $imageName;
+        $cachePath = $cacheDir.DIRECTORY_SEPARATOR.'tmp_'.$imageName;
         if (is_file($cachePath) && is_writable($cachePath)) {
             unlink($cachePath);
         }
@@ -213,7 +208,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         // build image from test dummy
         $image = Image::getInstanceByPath($dummyPath, $cacheDir);
         $this->assertInstanceOf('randomhost\\Image\\Image', $image);
-        $this->assertInternalType('resource', $image->image);
+        $this->assertIsResource($image->image);
         unset($image);
 
         // ensure image is cached
@@ -236,7 +231,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         // build image from cache
         $image = Image::getInstanceByPath($dummyPath, $cacheDir);
         $this->assertInstanceOf('randomhost\\Image\\Image', $image);
-        $this->assertInternalType('resource', $image->image);
+        $this->assertIsResource($image->image);
         unset($image);
 
         // delete cache file
@@ -251,8 +246,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Image::getInstanceByPath() with an invalid cache path.
-     *
-     * @return void
      */
     public function testGetInstanceByPathInvalidCachePath()
     {
@@ -260,9 +253,9 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $imagePath = $this->getTestDataPath('test.png');
 
-        $this->setExpectedException(
-            '\InvalidArgumentException',
-            'Cache directory at ' . $cacheDir . ' could not be found'
+        $this->expectException('\InvalidArgumentException');
+        $this->expectExceptionMessage(
+            'Cache directory at '.$cacheDir.' could not be found'
         );
 
         Image::getInstanceByPath($imagePath, $cacheDir);
@@ -270,11 +263,14 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Image::getInstanceByCreate().
-     *
-     * @return void
      */
     public function testGetInstanceByCreate()
     {
+        $image = Image::getInstanceByCreate(10, 10);
+
+        $this->assertInstanceOf('randomhost\\Image\\Image', $image);
+
+        $this->assertIsResource($image->image);
     }
 
     /**
@@ -285,8 +281,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @param int    $strategy        Merge strategy.
      *
      * @dataProvider providerMerge
-     *
-     * @return void
      */
     public function testMerge($firstImageName, $secondImageName, $strategy)
     {
@@ -299,8 +293,8 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('randomhost\\Image\\Image', $firstImage);
         $this->assertInstanceOf('randomhost\\Image\\Image', $secondImage);
 
-        $this->assertInternalType('resource', $firstImage->image);
-        $this->assertInternalType('resource', $secondImage->image);
+        $this->assertIsResource($firstImage->image);
+        $this->assertIsResource($secondImage->image);
 
         $this->assertSame(
             $firstImage,
@@ -315,8 +309,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Image::merge() with an unset first image resource.
-     *
-     * @return void
      */
     public function testMergeInvalidFirstResource()
     {
@@ -329,14 +321,14 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('randomhost\\Image\\Image', $firstImage);
         $this->assertInstanceOf('randomhost\\Image\\Image', $secondImage);
 
-        $this->assertInternalType('resource', $firstImage->image);
-        $this->assertInternalType('resource', $secondImage->image);
+        $this->assertIsResource($firstImage->image);
+        $this->assertIsResource($secondImage->image);
 
         $firstImage->image = null;
         $this->assertNull($firstImage->image);
 
-        $this->setExpectedException(
-            '\RuntimeException',
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage(
             'Attempt to merge image data using an invalid image resource.'
         );
 
@@ -345,8 +337,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Image::merge() with an unset second image resource.
-     *
-     * @return void
      */
     public function testMergeInvalidSecondResource()
     {
@@ -359,14 +349,14 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('randomhost\\Image\\Image', $firstImage);
         $this->assertInstanceOf('randomhost\\Image\\Image', $secondImage);
 
-        $this->assertInternalType('resource', $firstImage->image);
-        $this->assertInternalType('resource', $secondImage->image);
+        $this->assertIsResource($firstImage->image);
+        $this->assertIsResource($secondImage->image);
 
         $secondImage->image = null;
         $this->assertNull($secondImage->image);
 
-        $this->setExpectedException(
-            '\RuntimeException',
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage(
             'Attempt to merge image data using an invalid image resource.'
         );
 
@@ -381,7 +371,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @param int    $alpha           Alpha value.
      *
      * @dataProvider providerMergeAlpha
-     * @return void
      */
     public function testMergeAlpha($firstImageName, $secondImageName, $alpha)
     {
@@ -394,8 +383,8 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('randomhost\\Image\\Image', $firstImage);
         $this->assertInstanceOf('randomhost\\Image\\Image', $secondImage);
 
-        $this->assertInternalType('resource', $firstImage->image);
-        $this->assertInternalType('resource', $secondImage->image);
+        $this->assertIsResource($firstImage->image);
+        $this->assertIsResource($secondImage->image);
 
         $this->assertSame(
             $firstImage,
@@ -410,8 +399,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Image::mergeAlpha() with an unset first image resource.
-     *
-     * @return void
      */
     public function testMergeAlphaInvalidFirstResource()
     {
@@ -424,14 +411,14 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('randomhost\\Image\\Image', $firstImage);
         $this->assertInstanceOf('randomhost\\Image\\Image', $secondImage);
 
-        $this->assertInternalType('resource', $firstImage->image);
-        $this->assertInternalType('resource', $secondImage->image);
+        $this->assertIsResource($firstImage->image);
+        $this->assertIsResource($secondImage->image);
 
         $firstImage->image = null;
         $this->assertNull($firstImage->image);
 
-        $this->setExpectedException(
-            '\RuntimeException',
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage(
             'Attempt to merge image data using an invalid image resource.'
         );
 
@@ -440,8 +427,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Image::mergeAlpha() with an unset second image resource.
-     *
-     * @return void
      */
     public function testMergeAlphaInvalidSecondResource()
     {
@@ -454,14 +439,14 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('randomhost\\Image\\Image', $firstImage);
         $this->assertInstanceOf('randomhost\\Image\\Image', $secondImage);
 
-        $this->assertInternalType('resource', $firstImage->image);
-        $this->assertInternalType('resource', $secondImage->image);
+        $this->assertIsResource($firstImage->image);
+        $this->assertIsResource($secondImage->image);
 
         $secondImage->image = null;
         $this->assertNull($secondImage->image);
 
-        $this->setExpectedException(
-            '\RuntimeException',
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage(
             'Attempt to merge image data using an invalid image resource.'
         );
 
@@ -472,8 +457,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * Tests Image::render().
      *
      * @runInSeparateProcess
-     *
-     * @return void
      */
     public function testRender()
     {
@@ -483,12 +466,12 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('randomhost\\Image\\Image', $image);
 
-        $this->assertInternalType('resource', $image->image);
+        $this->assertIsResource($image->image);
 
         ob_start();
 
         $result = $image->render();
-        $imageData = ob_get_contents();
+        ob_get_contents();
         ob_end_clean();
 
         $this->assertSame($image, $result);
@@ -498,8 +481,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * Tests Image::render() with an unset image resource.
      *
      * @runInSeparateProcess
-     *
-     * @return void
      */
     public function testRenderInvalidResource()
     {
@@ -509,14 +490,14 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('randomhost\\Image\\Image', $image);
 
-        $this->assertInternalType('resource', $image->image);
+        $this->assertIsResource($image->image);
 
         $image->image = null;
 
         $this->assertNull($image->image);
 
-        $this->setExpectedException(
-            '\RuntimeException',
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessage(
             'Attempt to render invalid resource as image.'
         );
 
@@ -530,8 +511,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @param string $mimeType  Expected mime type.
      *
      * @dataProvider providerImageData
-     *
-     * @return void
      */
     public function testGetMimeType($imageName, $mimeType)
     {
@@ -541,7 +520,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('randomhost\\Image\\Image', $image);
 
-        $this->assertInternalType('resource', $image->image);
+        $this->assertIsResource($image->image);
 
         $this->assertSame($mimeType, $image->getMimeType());
     }
@@ -552,8 +531,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @param string $imageName Test image name.
      *
      * @dataProvider providerImageData
-     *
-     * @return void
      */
     public function testGetModified($imageName)
     {
@@ -563,7 +540,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('randomhost\\Image\\Image', $image);
 
-        $this->assertInternalType('resource', $image->image);
+        $this->assertIsResource($image->image);
 
         $this->assertSame(filemtime($imagePath), $image->getModified());
     }
@@ -577,8 +554,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @param int    $height    Expected image height.
      *
      * @dataProvider providerImageData
-     *
-     * @return void
      */
     public function testGetWidth($imageName, $mimeType, $width, $height)
     {
@@ -594,7 +569,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('randomhost\\Image\\Image', $image);
 
-        $this->assertInternalType('resource', $image->image);
+        $this->assertIsResource($image->image);
 
         $this->assertSame($width, $image->getWidth());
     }
@@ -608,8 +583,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      * @param int    $height    Expected image height.
      *
      * @dataProvider providerImageData
-     *
-     * @return void
      */
     public function testGetHeight($imageName, $mimeType, $width, $height)
     {
@@ -625,7 +598,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('randomhost\\Image\\Image', $image);
 
-        $this->assertInternalType('resource', $image->image);
+        $this->assertIsResource($image->image);
 
         $this->assertSame($height, $image->getHeight());
     }
@@ -635,12 +608,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      *
      * @param string $fileName Test data file name.
      *
-     * @return string
      * @throws \Exception Thrown in case the test data file could not be read.
+     *
+     * @return string
      */
     protected function getTestDataPath($fileName)
     {
-        $dir = APP_TESTDIR . self::TEST_DATA_DIR;
+        $dir = APP_TESTDIR.self::TEST_DATA_DIR;
         if (!is_dir($dir) || !is_readable($dir)) {
             throw new \Exception(
                 sprintf(
@@ -650,7 +624,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
             );
         }
 
-        $path = realpath($dir) . '/' . $fileName;
+        $path = realpath($dir).'/'.$fileName;
         if (!is_file($path) || !is_readable($path)) {
             throw new \Exception(
                 sprintf(
@@ -663,4 +637,3 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         return realpath($path);
     }
 }
-
